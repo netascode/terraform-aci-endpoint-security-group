@@ -75,7 +75,7 @@ module "aci_endpoint_security_group" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aci"></a> [aci](#provider\_aci) | 0.2.0 |
+| <a name="provider_aci"></a> [aci](#provider\_aci) | >= 0.2.0 |
 
 ## Inputs
 
