@@ -12,30 +12,54 @@ Location in GUI:
 
 ```hcl
 module "aci_endpoint_security_group" {
-  source = "git::https://github.com/vaneuk/terraform-aci-endpoint-security-group.git?ref=v0.0.1"
-  # source  = "netascode/aci-endpoint-security-group/aci"
+  source  = "netascode/aci-endpoint-security-group/aci"
   version = ">= 0.0.1"
 
   name                = "ESG1"
-  tenant              = "ABC"
-  application_profile = "AP1"
+  description         = "My Description"
+  tenant              = aci_rest.fvTenant.content.name
+  application_profile = aci_rest.fvAp.content.name
   vrf                 = "VRF1"
+  shutdown            = false
+  intra_esg_isolation = true
+  preferred_group     = true
   contracts = {
     consumers = ["CON1"]
     providers = ["CON1"]
   }
-  epg_selectors = [
-    {
-      tenant              = "ABC"
-      application_profile = "AP1"
-      endpoint_group      = "EPG1"
-    }
-  ]
   esg_contract_masters = [
     {
-      tenant                  = "ABC"
+      tenant                  = "TF"
       application_profile     = "AP1"
       endpoint_security_group = "ESG_MASTER"
+    }
+  ]
+  tag_selectors = [
+    {
+      key      = "key1"
+      operator = "contains"
+      value    = "value1"
+    },
+    {
+      key      = "key2"
+      operator = "equals"
+      value    = "value2"
+    },
+    {
+      key      = "key3"
+      operator = "regex"
+      value    = "value3"
+    },
+    {
+      key   = "key4"
+      value = "value4"
+    }
+  ]
+  epg_selectors = [
+    {
+      tenant              = "TF"
+      application_profile = "AP1"
+      endpoint_group      = "EPG1"
     }
   ]
   ip_subnet_selectors = [
@@ -43,25 +67,20 @@ module "aci_endpoint_security_group" {
       value = "1.1.1.0/24"
     },
     {
-      key         = "ip"
-      operator    = "equals"
-      value       = "1.1.2.0/24"
+      key   = "ip"
+      value = "1.1.2.0/24"
+    },
+    {
+      key      = "ip"
+      operator = "equals"
+      value    = "1.1.3.0/24"
+    },
+    {
+      value       = "1.1.4.0/24"
       description = "foo"
     }
   ]
-  tag_selectors = [
-    {
-      key      = "esg_name"
-      operator = "contains"
-      value    = "foo"
-    },
-    {
-      key   = "esg_name"
-      value = "bar"
-    }
-  ]
 }
-
 ```
 
 ## Requirements
@@ -85,11 +104,10 @@ module "aci_endpoint_security_group" {
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | Tenant name. | `string` | n/a | yes |
 | <a name="input_application_profile"></a> [application\_profile](#input\_application\_profile) | Application profile name. | `string` | n/a | yes |
 | <a name="input_vrf"></a> [vrf](#input\_vrf) | VRF name. | `string` | n/a | yes |
-| <a name="input_alias"></a> [alias](#input\_alias) | Alias. | `string` | `""` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description. | `string` | `""` | no |
 | <a name="input_shutdown"></a> [shutdown](#input\_shutdown) | Shutdown. | `bool` | `false` | no |
-| <a name="input_preferred_group"></a> [preferred\_group](#input\_preferred\_group) | Preferred group membership. | `bool` | `false` | no |
 | <a name="input_intra_esg_isolation"></a> [intra\_esg\_isolation](#input\_intra\_esg\_isolation) | Intra ESG isolation. | `bool` | `false` | no |
+| <a name="input_preferred_group"></a> [preferred\_group](#input\_preferred\_group) | Preferred group membership. | `bool` | `false` | no |
 | <a name="input_contracts"></a> [contracts](#input\_contracts) | Contracts. | <pre>object({<br>    consumers = optional(list(string))<br>    providers = optional(list(string))<br>  })</pre> | `{}` | no |
 | <a name="input_esg_contract_masters"></a> [esg\_contract\_masters](#input\_esg\_contract\_masters) | List of ESG contract masters. | <pre>list(object({<br>    tenant                  = string<br>    application_profile     = string<br>    endpoint_security_group = string<br>  }))</pre> | `[]` | no |
 | <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. Default value `description`: '' | <pre>list(object({<br>    key         = string<br>    operator    = optional(string)<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
@@ -102,6 +120,9 @@ module "aci_endpoint_security_group" {
 |------|-------------|
 | <a name="output_dn"></a> [dn](#output\_dn) | Distinguished name of `fvESg` object. |
 | <a name="output_name"></a> [name](#output\_name) | Endpoint security group name. |
+| <a name="output_tenant"></a> [tenant](#output\_tenant) | Tenant name. |
+| <a name="output_application_profile"></a> [application\_profile](#output\_application\_profile) | Application profile name. |
+| <a name="output_vrf"></a> [vrf](#output\_vrf) | VRF name. |
 
 ## Resources
 

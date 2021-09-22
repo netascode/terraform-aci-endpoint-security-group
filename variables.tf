@@ -38,17 +38,6 @@ variable "vrf" {
   }
 }
 
-variable "alias" {
-  description = "Alias."
-  type        = string
-  default     = ""
-
-  validation {
-    condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.alias))
-    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
-  }
-}
-
 variable "description" {
   description = "Description."
   type        = string
@@ -66,14 +55,14 @@ variable "shutdown" {
   default     = false
 }
 
-variable "preferred_group" {
-  description = "Preferred group membership."
+variable "intra_esg_isolation" {
+  description = "Intra ESG isolation."
   type        = bool
   default     = false
 }
 
-variable "intra_esg_isolation" {
-  description = "Intra ESG isolation."
+variable "preferred_group" {
+  description = "Preferred group membership."
   type        = bool
   default     = false
 }
