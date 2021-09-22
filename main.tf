@@ -71,6 +71,8 @@ resource "aci_rest" "fvEPgSelector" {
     descr = each.value.description != null ? each.value.description : ""
     matchEpgDn : each.key
   }
+
+  depends_on = [aci_rest.fvRsProv]
 }
 
 resource "aci_rest" "fvEPSelector" {
