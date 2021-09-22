@@ -131,7 +131,12 @@ variable "tag_selectors" {
   }))
   default = []
 
-  # No validation for key
+  validation {
+    condition = alltrue([
+      for ts in var.tag_selectors : can(regex("^[a-zA-Z0-9_.-]{0,64}$", ts.key))
+    ])
+    error_message = "`key`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
 
   validation {
     condition = alltrue([
@@ -140,7 +145,12 @@ variable "tag_selectors" {
     error_message = "`operator`: Valid values are `contains`, `equals`, `regex`."
   }
 
-  # No validation for value
+  validation {
+    condition = alltrue([
+      for ts in var.tag_selectors : can(regex("^[a-zA-Z0-9_.-]{0,64}$", ts.value))
+    ])
+    error_message = "`value`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
 
   validation {
     condition = alltrue([
