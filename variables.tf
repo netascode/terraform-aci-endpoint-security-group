@@ -28,16 +28,6 @@ variable "application_profile" {
   }
 }
 
-variable "vrf" {
-  description = "VRF name."
-  type        = string
-
-  validation {
-    condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.vrf))
-    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
-  }
-}
-
 variable "description" {
   description = "Description."
   type        = string
@@ -46,6 +36,16 @@ variable "description" {
   validation {
     condition     = can(regex("^[a-zA-Z0-9\\!#$%()*,-./:;@ _{|}~?&+]{0,128}$", var.description))
     error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `\\`, `!`, `#`, `$`, `%`, `(`, `)`, `*`, `,`, `-`, `.`, `/`, `:`, `;`, `@`, ` `, `_`, `{`, `|`, }`, `~`, `?`, `&`, `+`. Maximum characters: 128."
+  }
+}
+
+variable "vrf" {
+  description = "VRF name."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.vrf))
+    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
 }
 
@@ -67,26 +67,29 @@ variable "preferred_group" {
   default     = false
 }
 
-variable "contracts" {
-  description = "Contracts."
-  type = object({
-    consumers = optional(list(string))
-    providers = optional(list(string))
-  })
-  default = {}
+variable "contract_consumers" {
+  description = "List of contract consumers."
+  type        = list(string)
+  default     = []
 
   validation {
     condition = alltrue([
-      for con in coalesce(var.contracts.consumers, []) : can(regex("^[a-zA-Z0-9_.-]{0,64}$", con))
+      for c in var.contract_consumers : can(regex("^[a-zA-Z0-9_.-]{0,64}$", c))
     ])
-    error_message = "`consumers`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
+}
+
+variable "contract_providers" {
+  description = "List of contract providers."
+  type        = list(string)
+  default     = []
 
   validation {
     condition = alltrue([
-      for prov in coalesce(var.contracts.providers, []) : can(regex("^[a-zA-Z0-9_.-]{0,64}$", prov))
+      for c in var.contract_providers : can(regex("^[a-zA-Z0-9_.-]{0,64}$", c))
     ])
-    error_message = "`providers`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
 }
 
@@ -122,7 +125,7 @@ variable "esg_contract_masters" {
 }
 
 variable "tag_selectors" {
-  description = "List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. Default value `description`: ''"
+  description = "List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`."
   type = list(object({
     key         = string
     operator    = optional(string)
@@ -142,7 +145,7 @@ variable "tag_selectors" {
     condition = alltrue([
       for ts in var.tag_selectors : ts.operator == null || try(contains(["contains", "equals", "regex"], ts.operator), false)
     ])
-    error_message = "`operator`: Valid values are `contains`, `equals`, `regex`."
+    error_message = "`operator`: Valid values are `contains`, `equals` or `regex`."
   }
 
   validation {
@@ -161,7 +164,7 @@ variable "tag_selectors" {
 }
 
 variable "epg_selectors" {
-  description = "List of epg selectors. Format TBD"
+  description = "List of EPG selectors."
   type = list(object({
     tenant              = string
     application_profile = string
@@ -200,28 +203,12 @@ variable "epg_selectors" {
 }
 
 variable "ip_subnet_selectors" {
-  description = "List of ip subnet selectors. Format TBD"
+  description = "List of IP subnet selectors."
   type = list(object({
-    key         = optional(string)
-    operator    = optional(string)
     value       = string
     description = optional(string)
   }))
   default = []
-
-  validation {
-    condition = alltrue([
-      for iss in var.ip_subnet_selectors : iss.key == null || try(contains(["ip"], iss.key), false)
-    ])
-    error_message = "`key`: Valid values are `ip`."
-  }
-
-  validation {
-    condition = alltrue([
-      for iss in var.ip_subnet_selectors : iss.operator == null || try(contains(["equals"], iss.operator), false)
-    ])
-    error_message = "`operator`: Valid values are `equals`."
-  }
 
   validation {
     condition = alltrue([

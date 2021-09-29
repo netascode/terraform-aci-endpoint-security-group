@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-[![Tests](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-scaffolding/actions/workflows/test.yml)
+[![Tests](https://github.com/netascode/terraform-aci-endpoint-security-group/actions/workflows/test.yml/badge.svg)](https://github.com/netascode/terraform-aci-endpoint-security-group/actions/workflows/test.yml)
 
 # Terraform ACI Endpoint Security Group Module
 
@@ -23,10 +23,8 @@ module "aci_endpoint_security_group" {
   shutdown            = false
   intra_esg_isolation = true
   preferred_group     = true
-  contracts = {
-    consumers = ["CON1"]
-    providers = ["CON1"]
-  }
+  contract_consumers  = ["CON1"]
+  contract_providers  = ["CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"
@@ -67,13 +65,10 @@ module "aci_endpoint_security_group" {
       value = "1.1.1.0/24"
     },
     {
-      key   = "ip"
       value = "1.1.2.0/24"
     },
     {
-      key      = "ip"
-      operator = "equals"
-      value    = "1.1.3.0/24"
+      value = "1.1.3.0/24"
     },
     {
       value       = "1.1.4.0/24"
@@ -81,6 +76,7 @@ module "aci_endpoint_security_group" {
     }
   ]
 }
+
 ```
 
 ## Requirements
@@ -103,16 +99,17 @@ module "aci_endpoint_security_group" {
 | <a name="input_name"></a> [name](#input\_name) | Endpoint security group name. | `string` | n/a | yes |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | Tenant name. | `string` | n/a | yes |
 | <a name="input_application_profile"></a> [application\_profile](#input\_application\_profile) | Application profile name. | `string` | n/a | yes |
-| <a name="input_vrf"></a> [vrf](#input\_vrf) | VRF name. | `string` | n/a | yes |
 | <a name="input_description"></a> [description](#input\_description) | Description. | `string` | `""` | no |
+| <a name="input_vrf"></a> [vrf](#input\_vrf) | VRF name. | `string` | n/a | yes |
 | <a name="input_shutdown"></a> [shutdown](#input\_shutdown) | Shutdown. | `bool` | `false` | no |
 | <a name="input_intra_esg_isolation"></a> [intra\_esg\_isolation](#input\_intra\_esg\_isolation) | Intra ESG isolation. | `bool` | `false` | no |
 | <a name="input_preferred_group"></a> [preferred\_group](#input\_preferred\_group) | Preferred group membership. | `bool` | `false` | no |
-| <a name="input_contracts"></a> [contracts](#input\_contracts) | Contracts. | <pre>object({<br>    consumers = optional(list(string))<br>    providers = optional(list(string))<br>  })</pre> | `{}` | no |
+| <a name="input_contract_consumers"></a> [contract\_consumers](#input\_contract\_consumers) | List of contract consumers. | `list(string)` | `[]` | no |
+| <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
 | <a name="input_esg_contract_masters"></a> [esg\_contract\_masters](#input\_esg\_contract\_masters) | List of ESG contract masters. | <pre>list(object({<br>    tenant                  = string<br>    application_profile     = string<br>    endpoint_security_group = string<br>  }))</pre> | `[]` | no |
-| <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. Default value `description`: '' | <pre>list(object({<br>    key         = string<br>    operator    = optional(string)<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_epg_selectors"></a> [epg\_selectors](#input\_epg\_selectors) | List of epg selectors. Format TBD | <pre>list(object({<br>    tenant              = string<br>    application_profile = string<br>    endpoint_group      = string<br>    description         = optional(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_ip_subnet_selectors"></a> [ip\_subnet\_selectors](#input\_ip\_subnet\_selectors) | List of ip subnet selectors. Format TBD | <pre>list(object({<br>    key         = optional(string)<br>    operator    = optional(string)<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. | <pre>list(object({<br>    key         = string<br>    operator    = optional(string)<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_epg_selectors"></a> [epg\_selectors](#input\_epg\_selectors) | List of EPG selectors. | <pre>list(object({<br>    tenant              = string<br>    application_profile = string<br>    endpoint_group      = string<br>    description         = optional(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_ip_subnet_selectors"></a> [ip\_subnet\_selectors](#input\_ip\_subnet\_selectors) | List of IP subnet selectors. | <pre>list(object({<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
 
 ## Outputs
 

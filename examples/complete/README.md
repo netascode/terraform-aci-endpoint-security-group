@@ -24,10 +24,8 @@ module "aci_endpoint_security_group" {
   shutdown            = false
   intra_esg_isolation = true
   preferred_group     = true
-  contracts = {
-    consumers = ["CON1"]
-    providers = ["CON1"]
-  }
+  contract_consumers  = ["CON1"]
+  contract_providers  = ["CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"
@@ -68,13 +66,10 @@ module "aci_endpoint_security_group" {
       value = "1.1.1.0/24"
     },
     {
-      key   = "ip"
       value = "1.1.2.0/24"
     },
     {
-      key      = "ip"
-      operator = "equals"
-      value    = "1.1.3.0/24"
+      value = "1.1.3.0/24"
     },
     {
       value       = "1.1.4.0/24"
@@ -82,5 +77,6 @@ module "aci_endpoint_security_group" {
     }
   ]
 }
+
 ```
 <!-- END_TF_DOCS -->

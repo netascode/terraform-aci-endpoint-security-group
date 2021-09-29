@@ -25,7 +25,7 @@ resource "aci_rest" "fvRsScope" {
 }
 
 resource "aci_rest" "fvRsCons" {
-  for_each   = var.contracts.consumers != null ? toset(var.contracts.consumers) : []
+  for_each   = toset(var.contract_consumers)
   dn         = "${aci_rest.fvESg.id}/rscons-${each.value}"
   class_name = "fvRsCons"
   content = {
@@ -34,7 +34,7 @@ resource "aci_rest" "fvRsCons" {
 }
 
 resource "aci_rest" "fvRsProv" {
-  for_each   = var.contracts.providers != null ? toset(var.contracts.providers) : []
+  for_each   = toset(var.contract_providers)
   dn         = "${aci_rest.fvESg.id}/rsprov-${each.value}"
   class_name = "fvRsProv"
   content = {
@@ -68,19 +68,19 @@ resource "aci_rest" "fvEPgSelector" {
   dn         = "${aci_rest.fvESg.id}/epgselector-[${each.key}]"
   class_name = "fvEPgSelector"
   content = {
-    descr = each.value.description != null ? each.value.description : ""
-    matchEpgDn : each.key
+    descr      = each.value.description != null ? each.value.description : ""
+    matchEpgDn = each.key
   }
 
   depends_on = [aci_rest.fvRsProv]
 }
 
 resource "aci_rest" "fvEPSelector" {
-  for_each   = { for iss in var.ip_subnet_selectors : "${iss.key != null ? iss.key : "ip"}${iss.operator != null ? local.operators_map[iss.operator] : local.operators_map["equals"]}'${iss.value}'" => iss }
+  for_each   = { for iss in var.ip_subnet_selectors : "ip=='${iss.value}'" => iss }
   dn         = "${aci_rest.fvESg.id}/epselector-[${each.key}]"
   class_name = "fvEPSelector"
   content = {
-    descr = each.value.description != null ? each.value.description : ""
-    matchExpression : each.key
+    descr           = each.value.description != null ? each.value.description : ""
+    matchExpression = each.key
   }
 }
