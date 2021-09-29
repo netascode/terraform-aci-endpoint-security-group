@@ -1,9 +1,3 @@
-locals {
-  operators_map = {
-    "equals" = "=="
-  }
-}
-
 resource "aci_rest" "fvESg" {
   dn         = "uni/tn-${var.tenant}/ap-${var.application_profile}/esg-${var.name}"
   class_name = "fvESg"
