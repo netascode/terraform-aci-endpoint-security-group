@@ -5,27 +5,27 @@ terraform {
     }
 
     aci = {
-      source  = "netascode/aci"
-      version = ">=0.2.0"
+      source  = "CiscoDevNet/aci"
+      version = ">=2.0.0"
     }
   }
 }
 
-resource "aci_rest" "fvTenant" {
+resource "aci_rest_managed" "fvTenant" {
   dn         = "uni/tn-TF"
   class_name = "fvTenant"
 }
 
-resource "aci_rest" "fvAp" {
-  dn         = "${aci_rest.fvTenant.id}/ap-AP1"
+resource "aci_rest_managed" "fvAp" {
+  dn         = "${aci_rest_managed.fvTenant.id}/ap-AP1"
   class_name = "fvAp"
 }
 
 module "main_master" {
   source = "../.."
 
-  tenant              = aci_rest.fvTenant.content.name
-  application_profile = aci_rest.fvAp.content.name
+  tenant              = aci_rest_managed.fvTenant.content.name
+  application_profile = aci_rest_managed.fvAp.content.name
   name                = "ESG_MASTER"
   vrf                 = "VRF1"
 }
@@ -35,8 +35,8 @@ module "main" {
 
   name                = "ESG1"
   description         = "My Description"
-  tenant              = aci_rest.fvTenant.content.name
-  application_profile = aci_rest.fvAp.content.name
+  tenant              = aci_rest_managed.fvTenant.content.name
+  application_profile = aci_rest_managed.fvAp.content.name
   vrf                 = "VRF1"
   shutdown            = false
   intra_esg_isolation = true
@@ -96,8 +96,8 @@ module "main" {
   depends_on = [module.main_master]
 }
 
-data "aci_rest" "fvESg" {
-  dn = "${aci_rest.fvAp.id}/esg-${module.main.name}"
+data "aci_rest_managed" "fvESg" {
+  dn = "${aci_rest_managed.fvAp.id}/esg-${module.main.name}"
 
   depends_on = [module.main]
 }
@@ -107,31 +107,31 @@ resource "test_assertions" "fvESg" {
 
   equal "name" {
     description = "name"
-    got         = data.aci_rest.fvESg.content.name
+    got         = data.aci_rest_managed.fvESg.content.name
     want        = module.main.name
   }
 
   equal "descr" {
     description = "descr"
-    got         = data.aci_rest.fvESg.content.descr
+    got         = data.aci_rest_managed.fvESg.content.descr
     want        = "My Description"
   }
 
   equal "pcEnfPref" {
     description = "pcEnfPref"
-    got         = data.aci_rest.fvESg.content.pcEnfPref
+    got         = data.aci_rest_managed.fvESg.content.pcEnfPref
     want        = "enforced"
   }
 
   equal "prefGrMemb" {
     description = "prefGrMemb"
-    got         = data.aci_rest.fvESg.content.prefGrMemb
+    got         = data.aci_rest_managed.fvESg.content.prefGrMemb
     want        = "include"
   }
 }
 
-data "aci_rest" "fvRsScope" {
-  dn = "${data.aci_rest.fvESg.id}/rsscope"
+data "aci_rest_managed" "fvRsScope" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rsscope"
 
   depends_on = [module.main]
 }
@@ -141,13 +141,13 @@ resource "test_assertions" "fvRsScope" {
 
   equal "tnFvCtxName" {
     description = "tnFvCtxName"
-    got         = data.aci_rest.fvRsScope.content.tnFvCtxName
+    got         = data.aci_rest_managed.fvRsScope.content.tnFvCtxName
     want        = "VRF1"
   }
 }
 
-data "aci_rest" "fvRsCons" {
-  dn = "${data.aci_rest.fvESg.id}/rscons-CON1"
+data "aci_rest_managed" "fvRsCons" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rscons-CON1"
 
   depends_on = [module.main]
 }
@@ -157,13 +157,13 @@ resource "test_assertions" "fvRsCons" {
 
   equal "tnVzBrCPName" {
     description = "tnVzBrCPName"
-    got         = data.aci_rest.fvRsCons.content.tnVzBrCPName
+    got         = data.aci_rest_managed.fvRsCons.content.tnVzBrCPName
     want        = "CON1"
   }
 }
 
-data "aci_rest" "fvRsProv" {
-  dn = "${data.aci_rest.fvESg.id}/rsprov-CON1"
+data "aci_rest_managed" "fvRsProv" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rsprov-CON1"
 
   depends_on = [module.main]
 }
@@ -173,13 +173,13 @@ resource "test_assertions" "fvRsProv" {
 
   equal "tnVzBrCPName" {
     description = "tnVzBrCPName"
-    got         = data.aci_rest.fvRsProv.content.tnVzBrCPName
+    got         = data.aci_rest_managed.fvRsProv.content.tnVzBrCPName
     want        = "CON1"
   }
 }
 
-data "aci_rest" "fvRsSecInherited" {
-  dn = "${data.aci_rest.fvESg.id}/rssecInherited-[uni/tn-${aci_rest.fvTenant.content.name}/ap-${aci_rest.fvAp.content.name}/esg-ESG_MASTER]"
+data "aci_rest_managed" "fvRsSecInherited" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rssecInherited-[uni/tn-${aci_rest_managed.fvTenant.content.name}/ap-${aci_rest_managed.fvAp.content.name}/esg-ESG_MASTER]"
 
   depends_on = [module.main]
 }
@@ -189,14 +189,14 @@ resource "test_assertions" "fvRsSecInherited" {
 
   equal "tDn" {
     description = "tDn"
-    got         = data.aci_rest.fvRsSecInherited.content.tDn
-    want        = "uni/tn-${aci_rest.fvTenant.content.name}/ap-${aci_rest.fvAp.content.name}/esg-ESG_MASTER"
+    got         = data.aci_rest_managed.fvRsSecInherited.content.tDn
+    want        = "uni/tn-${aci_rest_managed.fvTenant.content.name}/ap-${aci_rest_managed.fvAp.content.name}/esg-ESG_MASTER"
   }
 }
 
 
-data "aci_rest" "fvTagSelector_1" {
-  dn = "${data.aci_rest.fvESg.id}/tagselectorkey-[key1]-value-[value1]"
+data "aci_rest_managed" "fvTagSelector_1" {
+  dn = "${data.aci_rest_managed.fvESg.id}/tagselectorkey-[key1]-value-[value1]"
 
   depends_on = [module.main]
 }
@@ -206,25 +206,25 @@ resource "test_assertions" "fvTagSelector_1" {
 
   equal "matchKey" {
     description = "matchKey"
-    got         = data.aci_rest.fvTagSelector_1.content.matchKey
+    got         = data.aci_rest_managed.fvTagSelector_1.content.matchKey
     want        = "key1"
   }
 
   equal "matchValue" {
     description = "matchValue"
-    got         = data.aci_rest.fvTagSelector_1.content.matchValue
+    got         = data.aci_rest_managed.fvTagSelector_1.content.matchValue
     want        = "value1"
   }
 
   equal "valueOperator" {
     description = "valueOperator"
-    got         = data.aci_rest.fvTagSelector_1.content.valueOperator
+    got         = data.aci_rest_managed.fvTagSelector_1.content.valueOperator
     want        = "contains"
   }
 }
 
-data "aci_rest" "fvTagSelector_4" {
-  dn = "${data.aci_rest.fvESg.id}/tagselectorkey-[key4]-value-[value4]"
+data "aci_rest_managed" "fvTagSelector_4" {
+  dn = "${data.aci_rest_managed.fvESg.id}/tagselectorkey-[key4]-value-[value4]"
 
   depends_on = [module.main]
 }
@@ -234,25 +234,25 @@ resource "test_assertions" "fvTagSelector_4" {
 
   equal "matchKey" {
     description = "matchKey"
-    got         = data.aci_rest.fvTagSelector_4.content.matchKey
+    got         = data.aci_rest_managed.fvTagSelector_4.content.matchKey
     want        = "key4"
   }
 
   equal "matchValue" {
     description = "matchValue"
-    got         = data.aci_rest.fvTagSelector_4.content.matchValue
+    got         = data.aci_rest_managed.fvTagSelector_4.content.matchValue
     want        = "value4"
   }
 
   equal "valueOperator" {
     description = "valueOperator"
-    got         = data.aci_rest.fvTagSelector_4.content.valueOperator
+    got         = data.aci_rest_managed.fvTagSelector_4.content.valueOperator
     want        = "equals"
   }
 }
 
-data "aci_rest" "fvEPgSelector" {
-  dn = "${data.aci_rest.fvESg.id}/epgselector-[uni/tn-${aci_rest.fvTenant.content.name}/ap-${aci_rest.fvAp.content.name}/epg-EPG1]"
+data "aci_rest_managed" "fvEPgSelector" {
+  dn = "${data.aci_rest_managed.fvESg.id}/epgselector-[uni/tn-${aci_rest_managed.fvTenant.content.name}/ap-${aci_rest_managed.fvAp.content.name}/epg-EPG1]"
 
   depends_on = [module.main]
 }
@@ -262,19 +262,19 @@ resource "test_assertions" "fvEPgSelector" {
 
   equal "descr" {
     description = "descr"
-    got         = data.aci_rest.fvEPgSelector.content.descr
+    got         = data.aci_rest_managed.fvEPgSelector.content.descr
     want        = ""
   }
 
   equal "matchEpgDn" {
     description = "matchEpgDn"
-    got         = data.aci_rest.fvEPgSelector.content.matchEpgDn
-    want        = "uni/tn-${aci_rest.fvTenant.content.name}/ap-${aci_rest.fvAp.content.name}/epg-EPG1"
+    got         = data.aci_rest_managed.fvEPgSelector.content.matchEpgDn
+    want        = "uni/tn-${aci_rest_managed.fvTenant.content.name}/ap-${aci_rest_managed.fvAp.content.name}/epg-EPG1"
   }
 }
 
-data "aci_rest" "fvEPSelector_1" {
-  dn = "${data.aci_rest.fvESg.id}/epselector-[ip=='1.1.1.0/24']"
+data "aci_rest_managed" "fvEPSelector_1" {
+  dn = "${data.aci_rest_managed.fvESg.id}/epselector-[ip=='1.1.1.0/24']"
 
   depends_on = [module.main]
 }
@@ -284,19 +284,19 @@ resource "test_assertions" "fvEPSelector_1" {
 
   equal "descr" {
     description = "descr"
-    got         = data.aci_rest.fvEPSelector_1.content.descr
+    got         = data.aci_rest_managed.fvEPSelector_1.content.descr
     want        = ""
   }
 
   equal "matchExpression" {
     description = "matchExpression"
-    got         = data.aci_rest.fvEPSelector_1.content.matchExpression
+    got         = data.aci_rest_managed.fvEPSelector_1.content.matchExpression
     want        = "ip=='1.1.1.0/24'"
   }
 }
 
-data "aci_rest" "fvEPSelector_4" {
-  dn = "${data.aci_rest.fvESg.id}/epselector-[ip=='1.1.4.0/24']"
+data "aci_rest_managed" "fvEPSelector_4" {
+  dn = "${data.aci_rest_managed.fvESg.id}/epselector-[ip=='1.1.4.0/24']"
 
   depends_on = [module.main]
 }
@@ -306,13 +306,13 @@ resource "test_assertions" "fvEPSelector_4" {
 
   equal "descr" {
     description = "descr"
-    got         = data.aci_rest.fvEPSelector_4.content.descr
+    got         = data.aci_rest_managed.fvEPSelector_4.content.descr
     want        = "foo"
   }
 
   equal "matchExpression" {
     description = "matchExpression"
-    got         = data.aci_rest.fvEPSelector_4.content.matchExpression
+    got         = data.aci_rest_managed.fvEPSelector_4.content.matchExpression
     want        = "ip=='1.1.4.0/24'"
   }
 }

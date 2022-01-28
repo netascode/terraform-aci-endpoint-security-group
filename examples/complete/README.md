@@ -13,13 +13,13 @@ Note that this example will create resources. Resources can be destroyed with `t
 
 ```hcl
 module "aci_endpoint_security_group" {
-  source  = "netascode/aci-endpoint-security-group/aci"
-  version = ">= 0.0.1"
+  source  = "netascode/endpoint-security-group/aci"
+  version = ">= 0.1.0"
 
   name                = "ESG1"
   description         = "My Description"
-  tenant              = aci_rest.fvTenant.content.name
-  application_profile = aci_rest.fvAp.content.name
+  tenant              = "ABC"
+  application_profile = "AP1"
   vrf                 = "VRF1"
   shutdown            = false
   intra_esg_isolation = true
@@ -77,6 +77,5 @@ module "aci_endpoint_security_group" {
     }
   ]
 }
-
 ```
 <!-- END_TF_DOCS -->
