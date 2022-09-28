@@ -1,6 +1,6 @@
 module "aci_endpoint_security_group" {
   source  = "netascode/endpoint-security-group/aci"
-  version = ">= 0.1.0"
+  version = ">= 0.2.0"
 
   name                = "ESG1"
   description         = "My Description"

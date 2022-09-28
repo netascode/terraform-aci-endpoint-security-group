@@ -13,7 +13,7 @@ Location in GUI:
 ```hcl
 module "aci_endpoint_security_group" {
   source  = "netascode/endpoint-security-group/aci"
-  version = ">= 0.1.0"
+  version = ">= 0.2.0"
 
   name                = "ESG1"
   description         = "My Description"
@@ -82,7 +82,7 @@ module "aci_endpoint_security_group" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.0 |
 | <a name="requirement_aci"></a> [aci](#requirement\_aci) | >= 2.0.0 |
 
 ## Providers
@@ -106,9 +106,9 @@ module "aci_endpoint_security_group" {
 | <a name="input_contract_consumers"></a> [contract\_consumers](#input\_contract\_consumers) | List of contract consumers. | `list(string)` | `[]` | no |
 | <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
 | <a name="input_esg_contract_masters"></a> [esg\_contract\_masters](#input\_esg\_contract\_masters) | List of ESG contract masters. | <pre>list(object({<br>    tenant                  = string<br>    application_profile     = string<br>    endpoint_security_group = string<br>  }))</pre> | `[]` | no |
-| <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. | <pre>list(object({<br>    key         = string<br>    operator    = optional(string)<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_epg_selectors"></a> [epg\_selectors](#input\_epg\_selectors) | List of EPG selectors. | <pre>list(object({<br>    tenant              = string<br>    application_profile = string<br>    endpoint_group      = string<br>    description         = optional(string)<br>  }))</pre> | `[]` | no |
-| <a name="input_ip_subnet_selectors"></a> [ip\_subnet\_selectors](#input\_ip\_subnet\_selectors) | List of IP subnet selectors. | <pre>list(object({<br>    value       = string<br>    description = optional(string)<br>  }))</pre> | `[]` | no |
+| <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. | <pre>list(object({<br>    key         = string<br>    operator    = optional(string, "equals")<br>    value       = string<br>    description = optional(string, "")<br>  }))</pre> | `[]` | no |
+| <a name="input_epg_selectors"></a> [epg\_selectors](#input\_epg\_selectors) | List of EPG selectors. | <pre>list(object({<br>    tenant              = string<br>    application_profile = string<br>    endpoint_group      = string<br>    description         = optional(string, "")<br>  }))</pre> | `[]` | no |
+| <a name="input_ip_subnet_selectors"></a> [ip\_subnet\_selectors](#input\_ip\_subnet\_selectors) | List of IP subnet selectors. | <pre>list(object({<br>    value       = string<br>    description = optional(string, "")<br>  }))</pre> | `[]` | no |
 
 ## Outputs
 

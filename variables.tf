@@ -128,9 +128,9 @@ variable "tag_selectors" {
   description = "List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`."
   type = list(object({
     key         = string
-    operator    = optional(string)
+    operator    = optional(string, "equals")
     value       = string
-    description = optional(string)
+    description = optional(string, "")
   }))
   default = []
 
@@ -169,7 +169,7 @@ variable "epg_selectors" {
     tenant              = string
     application_profile = string
     endpoint_group      = string
-    description         = optional(string)
+    description         = optional(string, "")
   }))
   default = []
 
@@ -206,7 +206,7 @@ variable "ip_subnet_selectors" {
   description = "List of IP subnet selectors."
   type = list(object({
     value       = string
-    description = optional(string)
+    description = optional(string, "")
   }))
   default = []
 

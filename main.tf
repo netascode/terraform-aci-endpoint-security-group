@@ -50,10 +50,10 @@ resource "aci_rest_managed" "fvTagSelector" {
   dn         = "${aci_rest_managed.fvESg.dn}/tagselectorkey-[${each.value.key}]-value-[${each.value.value}]"
   class_name = "fvTagSelector"
   content = {
-    descr         = each.value.description != null ? each.value.description : ""
+    descr         = each.value.description
     matchKey      = each.value.key
     matchValue    = each.value.value
-    valueOperator = each.value.operator != null ? each.value.operator : "equals"
+    valueOperator = each.value.operator
   }
 }
 
@@ -62,7 +62,7 @@ resource "aci_rest_managed" "fvEPgSelector" {
   dn         = "${aci_rest_managed.fvESg.dn}/epgselector-[${each.key}]"
   class_name = "fvEPgSelector"
   content = {
-    descr      = each.value.description != null ? each.value.description : ""
+    descr      = each.value.description
     matchEpgDn = each.key
   }
 
@@ -74,7 +74,7 @@ resource "aci_rest_managed" "fvEPSelector" {
   dn         = "${aci_rest_managed.fvESg.dn}/epselector-[${each.key}]"
   class_name = "fvEPSelector"
   content = {
-    descr           = each.value.description != null ? each.value.description : ""
+    descr           = each.value.description
     matchExpression = each.key
   }
 }
