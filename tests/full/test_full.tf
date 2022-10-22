@@ -71,6 +71,10 @@ module "main" {
     {
       key   = "key4"
       value = "value4"
+    },
+    {
+      key   = "__vmm::vmname"
+      value = "value4"
     }
   ]
   epg_selectors = [
