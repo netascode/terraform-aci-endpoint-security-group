@@ -13,18 +13,19 @@ Location in GUI:
 ```hcl
 module "aci_endpoint_security_group" {
   source  = "netascode/endpoint-security-group/aci"
-  version = ">= 0.2.0"
+  version = ">= 0.2.2"
 
-  name                = "ESG1"
-  description         = "My Description"
-  tenant              = "ABC"
-  application_profile = "AP1"
-  vrf                 = "VRF1"
-  shutdown            = false
-  intra_esg_isolation = true
-  preferred_group     = true
-  contract_consumers  = ["CON1"]
-  contract_providers  = ["CON1"]
+  name                        = "ESG1"
+  description                 = "My Description"
+  tenant                      = "ABC"
+  application_profile         = "AP1"
+  vrf                         = "VRF1"
+  shutdown                    = false
+  intra_esg_isolation         = true
+  preferred_group             = true
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["IMPORTED-CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"
@@ -105,6 +106,7 @@ module "aci_endpoint_security_group" {
 | <a name="input_preferred_group"></a> [preferred\_group](#input\_preferred\_group) | Preferred group membership. | `bool` | `false` | no |
 | <a name="input_contract_consumers"></a> [contract\_consumers](#input\_contract\_consumers) | List of contract consumers. | `list(string)` | `[]` | no |
 | <a name="input_contract_providers"></a> [contract\_providers](#input\_contract\_providers) | List of contract providers. | `list(string)` | `[]` | no |
+| <a name="input_contract_imported_consumers"></a> [contract\_imported\_consumers](#input\_contract\_imported\_consumers) | List of imported contract consumers. | `list(string)` | `[]` | no |
 | <a name="input_esg_contract_masters"></a> [esg\_contract\_masters](#input\_esg\_contract\_masters) | List of ESG contract masters. | <pre>list(object({<br>    tenant                  = string<br>    application_profile     = string<br>    endpoint_security_group = string<br>  }))</pre> | `[]` | no |
 | <a name="input_tag_selectors"></a> [tag\_selectors](#input\_tag\_selectors) | List of tag selectors.  Choices `operator`: `contains`, `equals`, `regex`. Default value `operator`: `equals`. | <pre>list(object({<br>    key         = string<br>    operator    = optional(string, "equals")<br>    value       = string<br>    description = optional(string, "")<br>  }))</pre> | `[]` | no |
 | <a name="input_epg_selectors"></a> [epg\_selectors](#input\_epg\_selectors) | List of EPG selectors. | <pre>list(object({<br>    tenant              = string<br>    application_profile = string<br>    endpoint_group      = string<br>    description         = optional(string, "")<br>  }))</pre> | `[]` | no |
@@ -128,6 +130,7 @@ module "aci_endpoint_security_group" {
 | [aci_rest_managed.fvEPgSelector](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 | [aci_rest_managed.fvESg](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 | [aci_rest_managed.fvRsCons](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
+| [aci_rest_managed.fvRsConsIf](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 | [aci_rest_managed.fvRsProv](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 | [aci_rest_managed.fvRsScope](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |
 | [aci_rest_managed.fvRsSecInherited](https://registry.terraform.io/providers/CiscoDevNet/aci/latest/docs/resources/rest_managed) | resource |

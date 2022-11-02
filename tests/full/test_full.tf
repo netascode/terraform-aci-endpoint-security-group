@@ -35,16 +35,17 @@ module "main_master" {
 module "main" {
   source = "../.."
 
-  name                = "ESG1"
-  description         = "My Description"
-  tenant              = aci_rest_managed.fvTenant.content.name
-  application_profile = aci_rest_managed.fvAp.content.name
-  vrf                 = "VRF1"
-  shutdown            = false
-  intra_esg_isolation = true
-  preferred_group     = true
-  contract_consumers  = ["CON1"]
-  contract_providers  = ["CON1"]
+  name                        = "ESG1"
+  description                 = "My Description"
+  tenant                      = aci_rest_managed.fvTenant.content.name
+  application_profile         = aci_rest_managed.fvAp.content.name
+  vrf                         = "VRF1"
+  shutdown                    = false
+  intra_esg_isolation         = true
+  preferred_group             = true
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["IMPORTED-CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"
@@ -181,6 +182,22 @@ resource "test_assertions" "fvRsProv" {
     description = "tnVzBrCPName"
     got         = data.aci_rest_managed.fvRsProv.content.tnVzBrCPName
     want        = "CON1"
+  }
+}
+
+data "aci_rest_managed" "fvRsConsIf" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rsconsIf-IMPORTED-CON1"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "fvRsConsIf" {
+  component = "fvRsConsIf"
+
+  equal "tnVzCPIfName" {
+    description = "tnVzCPIfName"
+    got         = data.aci_rest_managed.fvRsConsIf.content.tnVzCPIfName
+    want        = "IMPORTED-CON1"
   }
 }
 

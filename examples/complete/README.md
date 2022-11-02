@@ -14,18 +14,19 @@ Note that this example will create resources. Resources can be destroyed with `t
 ```hcl
 module "aci_endpoint_security_group" {
   source  = "netascode/endpoint-security-group/aci"
-  version = ">= 0.2.0"
+  version = ">= 0.2.2"
 
-  name                = "ESG1"
-  description         = "My Description"
-  tenant              = "ABC"
-  application_profile = "AP1"
-  vrf                 = "VRF1"
-  shutdown            = false
-  intra_esg_isolation = true
-  preferred_group     = true
-  contract_consumers  = ["CON1"]
-  contract_providers  = ["CON1"]
+  name                        = "ESG1"
+  description                 = "My Description"
+  tenant                      = "ABC"
+  application_profile         = "AP1"
+  vrf                         = "VRF1"
+  shutdown                    = false
+  intra_esg_isolation         = true
+  preferred_group             = true
+  contract_consumers          = ["CON1"]
+  contract_providers          = ["CON1"]
+  contract_imported_consumers = ["IMPORTED-CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"

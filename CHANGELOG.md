@@ -1,3 +1,7 @@
+## 0.2.2 (unreleased)
+
+- Add support for imported consumers (contract interface)
+
 ## 0.2.1
 
 - Fix tag selector variable validation
