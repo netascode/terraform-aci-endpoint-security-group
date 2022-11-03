@@ -46,6 +46,7 @@ module "main" {
   contract_consumers          = ["CON1"]
   contract_providers          = ["CON1"]
   contract_imported_consumers = ["IMPORTED-CON1"]
+  contract_intra_esgs         = ["CON1"]
   esg_contract_masters = [
     {
       tenant                  = "TF"
@@ -198,6 +199,22 @@ resource "test_assertions" "fvRsConsIf" {
     description = "tnVzCPIfName"
     got         = data.aci_rest_managed.fvRsConsIf.content.tnVzCPIfName
     want        = "IMPORTED-CON1"
+  }
+}
+
+data "aci_rest_managed" "fvRsIntraEpg" {
+  dn = "${data.aci_rest_managed.fvESg.id}/rsintraEpg-CON1"
+
+  depends_on = [module.main]
+}
+
+resource "test_assertions" "fvRsIntraEpg" {
+  component = "fvRsIntraEpg"
+
+  equal "tnVzBrCPName" {
+    description = "tnVzBrCPName"
+    got         = data.aci_rest_managed.fvRsIntraEpg.content.tnVzBrCPName
+    want        = "CON1"
   }
 }
 

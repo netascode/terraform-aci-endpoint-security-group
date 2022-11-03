@@ -45,6 +45,15 @@ resource "aci_rest_managed" "fvRsConsIf" {
   }
 }
 
+resource "aci_rest_managed" "fvRsIntraEpg" {
+  for_each   = toset(var.contract_intra_esgs)
+  dn         = "${aci_rest_managed.fvESg.dn}/rsintraEpg-${each.value}"
+  class_name = "fvRsIntraEpg"
+  content = {
+    tnVzBrCPName = each.value
+  }
+}
+
 resource "aci_rest_managed" "fvRsSecInherited" {
   for_each   = { for ecm in var.esg_contract_masters : "uni/tn-${ecm.tenant}/ap-${ecm.application_profile}/esg-${ecm.endpoint_security_group}" => ecm }
   dn         = "${aci_rest_managed.fvESg.dn}/rssecInherited-[${each.key}]"

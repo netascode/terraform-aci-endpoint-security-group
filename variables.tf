@@ -106,6 +106,19 @@ variable "contract_imported_consumers" {
   }
 }
 
+variable "contract_intra_esgs" {
+  description = "List of intra-ESG contracts."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for c in var.contract_intra_esgs : can(regex("^[a-zA-Z0-9_.-]{0,64}$", c))
+    ])
+    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
+}
+
 variable "esg_contract_masters" {
   description = "List of ESG contract masters."
   type = list(object({

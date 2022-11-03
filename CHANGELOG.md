@@ -1,3 +1,7 @@
+## 0.2.3 (unreleased)
+
+- Add support for intra-ESG contracts
+
 ## 0.2.2
 
 - Add support for imported consumers (contract interface)
