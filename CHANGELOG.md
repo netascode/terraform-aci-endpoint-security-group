@@ -1,4 +1,4 @@
-## 0.2.4 (unreleased)
+## 0.2.4
 
 - Add dependencies to ensure ESG is associated to final VRF first
 
