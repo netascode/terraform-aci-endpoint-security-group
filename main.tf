@@ -25,6 +25,10 @@ resource "aci_rest_managed" "fvRsCons" {
   content = {
     tnVzBrCPName = each.value
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvRsProv" {
@@ -34,6 +38,10 @@ resource "aci_rest_managed" "fvRsProv" {
   content = {
     tnVzBrCPName = each.value
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvRsConsIf" {
@@ -43,6 +51,10 @@ resource "aci_rest_managed" "fvRsConsIf" {
   content = {
     tnVzCPIfName = each.value
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvRsIntraEpg" {
@@ -52,6 +64,10 @@ resource "aci_rest_managed" "fvRsIntraEpg" {
   content = {
     tnVzBrCPName = each.value
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvRsSecInherited" {
@@ -61,6 +77,10 @@ resource "aci_rest_managed" "fvRsSecInherited" {
   content = {
     tDn = each.key
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvTagSelector" {
@@ -73,6 +93,10 @@ resource "aci_rest_managed" "fvTagSelector" {
     matchValue    = each.value.value
     valueOperator = each.value.operator
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }
 
 resource "aci_rest_managed" "fvEPgSelector" {
@@ -84,7 +108,10 @@ resource "aci_rest_managed" "fvEPgSelector" {
     matchEpgDn = each.key
   }
 
-  depends_on = [aci_rest_managed.fvRsProv]
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+    aci_rest_managed.fvRsProv,
+  ]
 }
 
 resource "aci_rest_managed" "fvEPSelector" {
@@ -95,4 +122,8 @@ resource "aci_rest_managed" "fvEPSelector" {
     descr           = each.value.description
     matchExpression = each.key
   }
+
+  depends_on = [
+    aci_rest_managed.fvRsScope,
+  ]
 }

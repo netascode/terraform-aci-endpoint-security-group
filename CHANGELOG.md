@@ -1,3 +1,7 @@
+## 0.2.4 (unreleased)
+
+- Add dependencies to ensure ESG is associated to final VRF first
+
 ## 0.2.3
 
 - Add support for intra-ESG contracts
