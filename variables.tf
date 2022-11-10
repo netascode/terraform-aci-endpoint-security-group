@@ -164,7 +164,7 @@ variable "tag_selectors" {
     condition = alltrue([
       for ts in var.tag_selectors : can(regex("^[a-zA-Z0-9_.\\-:]{0,64}$", ts.key))
     ])
-    error_message = "`key`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`, `:`. Maximum characters: 64."
+    error_message = "`key`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `\\`, `-`, `:`. Maximum characters: 64."
   }
 
   validation {
