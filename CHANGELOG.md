@@ -1,3 +1,7 @@
+## 0.2.5 (unreleased)
+
+- Allow escaping character in tag selectors
+
 ## 0.2.4
 
 - Add dependencies to ensure ESG is associated to final VRF first
